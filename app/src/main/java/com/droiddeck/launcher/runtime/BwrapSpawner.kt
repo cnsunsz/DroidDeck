@@ -33,7 +33,9 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 object BwrapSpawner {
     private const val TAG = "BwrapSpawner"
-    const val SOCKET = "com.droiddeck.launcher.bwrap"
+    // DroidDeck 中文版: its own abstract socket, so it never collides with the original app's.
+    // Kept in step with tools/linuxfs/overlay/usr/local/bin/bannerlator-bwrap.
+    const val SOCKET = "com.droiddeck.launcher.zh.bwrap"
     private val seq = AtomicInteger()
     @Volatile private var server: LocalServerSocket? = null
 

@@ -16,6 +16,8 @@ on:
       - 'LICENSE'
       - '.gitignore'
   workflow_dispatch:
+  # DroidDeck 中文版: release-zh.yml builds through this workflow.
+  workflow_call:
 
 permissions:
   contents: read
@@ -190,7 +192,7 @@ jobs:
           done
           if [ -f tools/gamescope/release.env ]; then
             . tools/gamescope/release.env
-            gh release download "${GAMESCOPE_TAG}" -R "${GITHUB_REPOSITORY}" -p gamescope.tzst -O gamescope.tzst
+            gh release download "${GAMESCOPE_TAG}" -R Droid-Deck/DroidDeck -p gamescope.tzst -O gamescope.tzst
             echo "${GAMESCOPE_SHA256}  gamescope.tzst" | sha256sum -c -
             tar --use-compress-program=unzstd -xf gamescope.tzst -C "$D"
             test -f "$D/usr/local/bin/gamescope"
@@ -198,7 +200,7 @@ jobs:
           fi
           if [ -f tools/wlroots/release.env ]; then
             . tools/wlroots/release.env
-            gh release download "${WLROOTS_TAG}" -R "${GITHUB_REPOSITORY}" -p wlroots.tzst -O wlroots.tzst
+            gh release download "${WLROOTS_TAG}" -R Droid-Deck/DroidDeck -p wlroots.tzst -O wlroots.tzst
             echo "${WLROOTS_SHA256}  wlroots.tzst" | sha256sum -c -
             tar --use-compress-program=unzstd -xf wlroots.tzst -C "$D"
             test -f "$D/usr/local/lib/droiddeck-wlroots/libwlroots-0.20.so"
@@ -312,6 +314,11 @@ jobs:
           key: cxx-${{ env.NDK_VERSION }}-${{ hashFiles('app/src/main/cpp/**') }}
           restore-keys: |
             cxx-${{ env.NDK_VERSION }}-
+
+      # DroidDeck 中文版: the GPL drivers and Decky Loader the APK carries (tools/zh/bundled.json),
+      # each checked against its pinned GitHub sha256.
+      - name: Bundle GPL components
+        run: python3 tools/zh/fetch_bundled.py
 
       - name: Build
         id: build
@@ -453,7 +460,9 @@ jobs:
 
   sign:
     needs: build
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    # DroidDeck 中文版: upstream's main-build signing and DroidDeck-CI publishing stay upstream's;
+    # this fork signs and publishes in release-zh.yml.
+    if: github.repository == 'Droid-Deck/DroidDeck' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       actions: read
@@ -471,7 +480,7 @@ jobs:
   # DISCORD_BUILDS_WEBHOOK is the channel's webhook URL.
   announce:
     needs: [build, sign]
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.repository == 'Droid-Deck/DroidDeck' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:

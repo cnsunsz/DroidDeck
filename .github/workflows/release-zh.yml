@@ -1,0 +1,106 @@
+# DroidDeck 中文版: build, sign with this fork's release key, and publish a GitHub release.
+# Push a tag like v0.3.0-zh.1 (its notes go in docs/releases/<tag>.md), or run it by hand with a tag.
+name: Release DroidDeck 中文版
+run-name: release ${{ inputs.tag || github.ref_name }}
+
+on:
+  push:
+    tags: [ 'v*-zh*' ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag, e.g. v0.3.0-zh.1 (made at this commit if it does not exist)
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-zh
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    permissions:
+      contents: read
+      pull-requests: write
+    secrets: inherit
+
+  publish:
+    name: sign and publish
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: droiddeck-apk
+          path: in
+
+      - name: Sign with the release key
+        env:
+          RELEASE_KEYSTORE_B64: ${{ secrets.RELEASE_KEYSTORE_B64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: droiddeck
+        run: |
+          set -euo pipefail
+          [[ $TAG =~ ^v[0-9A-Za-z._-]+$ ]] || { echo "::error::tag '$TAG': v, then letters, digits, . _ -"; exit 1; }
+          [ -n "$RELEASE_KEYSTORE_B64" ] || { echo "::error::no RELEASE_KEYSTORE_B64 secret"; exit 1; }
+          export RELEASE_KEYSTORE="$RUNNER_TEMP/release.p12"
+          ( umask 077; base64 -d <<<"$RELEASE_KEYSTORE_B64" > "$RELEASE_KEYSTORE" )
+          export BUILD_TOOLS=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -n1)
+          apks=(in/*.apk)
+          [ ${#apks[@]} = 1 ] && [ -f "${apks[0]}" ] || { echo "::error::expected one apk in the build"; exit 1; }
+          mkdir -p out
+          name="DroidDeck-ZH-${TAG#v}.apk"
+          tools/zh/sign-zh.sh "${apks[0]}" "out/$name" | tee -a "$GITHUB_STEP_SUMMARY"
+          ( cd out && sha256sum -- *.apk > SHA256SUMS.txt && cat SHA256SUMS.txt )
+
+      - name: Forget the key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.p12"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: droiddeck-zh-signed
+          path: out/*
+          if-no-files-found: error
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          notes="docs/releases/$TAG.md"
+          [ -f "$notes" ] || { echo "::error::$notes is missing"; exit 1; }
+          title=$(sed -n '1s/^# *//p' "$notes"); [ -n "$title" ] || title="DroidDeck 中文版 $TAG"
+          {
+            sed '1{/^# /d;}' "$notes"
+            echo
+            echo "---"
+            echo
+            echo "SHA-256："
+            echo '```'
+            cat out/SHA256SUMS.txt
+            echo '```'
+            echo "签名证书 SHA-256：\`$(tr -d ' \n' < keystore/release-signer.sha256)\`"
+            echo
+            echo "由 [Actions 运行 $GITHUB_RUN_ID]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID) 从 \`$GITHUB_SHA\` 构建、签名并发布。"
+          } > "$RUNNER_TEMP/body.md"
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" -R "$GITHUB_REPOSITORY" out/*.apk out/SHA256SUMS.txt --clobber
+            gh release edit "$TAG" -R "$GITHUB_REPOSITORY" --title "$title" --notes-file "$RUNNER_TEMP/body.md"
+          else
+            gh release create "$TAG" -R "$GITHUB_REPOSITORY" out/*.apk out/SHA256SUMS.txt \
+              --target "$GITHUB_SHA" --title "$title" --notes-file "$RUNNER_TEMP/body.md" --latest
+          fi
+          echo "Published $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$TAG" >> "$GITHUB_STEP_SUMMARY"

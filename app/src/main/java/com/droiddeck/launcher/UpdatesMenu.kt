@@ -46,7 +46,7 @@ internal class UpdatesMenu(private val activity: Activity, private val ui: Handl
         onAllowInstalls = {
             askPermission = false
             runCatching { activity.startActivity(SelfInstaller.permissionIntent(activity)) }
-                .onFailure { error = "Couldn't open Android's \"Install unknown apps\" setting"; pending = null }
+                .onFailure { error = activity.getString(R.string.hc_upd_unknown_apps); pending = null }
         },
         onDismissPermission = { askPermission = false; pending = null },
     )
@@ -77,7 +77,7 @@ internal class UpdatesMenu(private val activity: Activity, private val ui: Handl
                     catalog = it
                     follow = AppUpdates.follow(activity, it)
                     error = null
-                }.onFailure { if (force) error = "Couldn't check: ${it.message ?: it.javaClass.simpleName}" }
+                }.onFailure { if (force) error = activity.getString(R.string.hc_drv_couldnt_check, it.message ?: it.javaClass.simpleName) }
             }
         }, "app-updates").start()
     }
@@ -90,9 +90,9 @@ internal class UpdatesMenu(private val activity: Activity, private val ui: Handl
 
     private fun install(r: AppUpdates.Release) {
         if (stage != null) return
-        val apk = r.apk ?: run { error = "This build has no download for this copy of DroidDeck"; return }
+        val apk = r.apk ?: run { error = activity.getString(R.string.hc_upd_no_download); return }
         AppUpdates.installBlock(r)?.let { error = it; return }
-        if (SessionState.running) { error = "Stop the running session first, then update"; return }
+        if (SessionState.running) { error = activity.getString(R.string.hc_upd_stop_first); return }
         if (!SelfInstaller.canInstall(activity)) { pending = r; askPermission = true; return }
         error = null
         stage = "Downloading"
@@ -103,7 +103,7 @@ internal class UpdatesMenu(private val activity: Activity, private val ui: Handl
                 ui.post { stage = "Installing"; percent = -1 }
                 SelfInstaller.install(activity, file)
             }
-            result.onFailure { e -> ui.post { stage = null; error = e.message ?: "The update failed" } }
+            result.onFailure { e -> ui.post { stage = null; error = e.message ?: activity.getString(R.string.hc_upd_failed) } }
         }, "app-update-install").start()
     }
 
@@ -114,8 +114,8 @@ internal class UpdatesMenu(private val activity: Activity, private val ui: Handl
                 PackageInstaller.STATUS_PENDING_USER_ACTION -> {
                     val confirm = if (Build.VERSION.SDK_INT >= 33) intent.getParcelableExtra(Intent.EXTRA_INTENT, Intent::class.java)
                     else @Suppress("DEPRECATION") intent.getParcelableExtra(Intent.EXTRA_INTENT)
-                    if (confirm == null) { stage = null; error = "Android didn't offer to install the update"; return }
-                    stage = "Waiting for you to confirm"
+                    if (confirm == null) { stage = null; error = activity.getString(R.string.hc_upd_not_offered); return }
+                    stage = activity.getString(R.string.hc_upd_wait_confirm)
                     activity.startActivity(confirm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 }
                 PackageInstaller.STATUS_SUCCESS -> stage = null

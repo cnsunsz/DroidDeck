@@ -13,6 +13,16 @@ DroidDeck brings the SteamOS experience to Android: Valve's Steam client in Big 
 
 > Note: DroidDeck does not have a stand-alone website. Do not click on any download links from websites claiming to be the DroidDeck team. 
 
+## 中文版说明（DroidDeck 中文版）
+
+这是 [Droid-Deck/DroidDeck](https://github.com/Droid-Deck/DroidDeck) 的简体中文分支，下载地址见本仓库的 [Releases](https://github.com/cnsunsz/DroidDeck/releases)。
+
+- **完整简体中文界面**：`app/src/main/res/values-zh-rCN/strings.xml`，系统语言为简体中文时自动启用。
+- **包名 `com.droiddeck.launcher.zh`**，应用名“DroidDeck 中文版”，可与原版**同时安装**。原版由上游私有密钥签名，第三方构建无法覆盖安装原版。
+- **预装 GPU 驱动（Banners-Turnip、WinNative Turnip）和 Decky Loader**，首次运行无需下载，安装前会校验 SHA-256。许可证与源代码链接见 [NOTICE-zh.md](NOTICE-zh.md)。
+- Linux 运行时、Nightlies 组件、Steam 和 Proton 仍按原方式在线下载。
+- 发布流程：推送 `v*-zh*` 标签（发布说明写在 `docs/releases/<标签>.md`），由 `.github/workflows/release-zh.yml` 构建，并用本分支的发布密钥签名、发布。
+
 ## Requirements and install
 
 Use Android 9 or newer on a supported Adreno device (730 or newer, or 8xx). Mali, Xclipse, PowerVR, and Adreno 710 are unsupported. No root is required. Allow about 3 GB for the runtime and 1.1 GB more for the desktop and emulators. Install the APK from [Releases](https://github.com/Droid-Deck/DroidDeck/releases), install the Linux runtime, then press **Play** and sign in. Steam downloads on first launch. Install **Desktop & apps** to use the desktop and emulators. The **Store** installs Linux apps and games from Flathub (ARM64 builds) with Flatpak; with additional options to install Appimages and set up scripts.
