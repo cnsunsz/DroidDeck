@@ -1,5 +1,6 @@
 package com.droiddeck.launcher.gpu
 
+import com.droiddeck.launcher.core.BundledComponents
 import com.droiddeck.launcher.core.Hashes
 import android.content.Context
 import com.droiddeck.launcher.core.FileUtils
@@ -26,6 +27,7 @@ object TurnipReleases {
     private const val PREFS = "turnip_releases"
     private const val KEY_RELEASE = "latest"
     private const val KEY_DOWNLOADS = "downloads"
+    private const val KEY_BUNDLED_SEEN = "bundled_seen"
 
     /** [label] names the variant for the menu: the GPUs it is for, and a build flavour. */
     /** [sha256] is the release asset's digest from GitHub; empty for a list cached before it was kept. */
@@ -80,7 +82,7 @@ object TurnipReleases {
 
     /** The result of the last check, or null when the user has never checked. */
     fun cached(context: Context): Check? {
-        val raw = prefs(context).getString(KEY_RELEASE, null) ?: return null
+        val raw = prefs(context).getString(KEY_RELEASE, null) ?: return bundledCheck(context)
         return runCatching { parse(JSONObject(raw)) }.getOrNull()
     }
 
@@ -192,10 +194,38 @@ object TurnipReleases {
         prefs(context).edit().putString(KEY_DOWNLOADS, d.toString()).apply()
     }
 
+    /**
+     * DroidDeck 中文版: the drivers the APK carries (BundledComponents), as a check of their own -
+     * what the menus and Auto work from until the first online check. Its time is when it was
+     * first used, so Auto installs the bundled pair without going online and looks for newer
+     * builds a day later, as it does after any check.
+     */
+    private fun bundledCheck(context: Context): Check? {
+        val entries = BundledComponents.ofKind(context, "turnip")
+        if (entries.isEmpty()) return null
+        val assets = ArrayList<Asset>()
+        for (e in entries) {
+            val src = SOURCES.firstOrNull { it.label == e.source } ?: continue
+            val kind = src.classify(e.name, e.tag) ?: continue
+            assets.add(Asset(e.source, e.tag, e.name, e.url, e.size, kind.linux, kind.label, e.sha256, kind.pair, kind.bundle))
+        }
+        if (assets.isEmpty()) return null
+        val p = prefs(context)
+        val seen = p.getLong(KEY_BUNDLED_SEEN, 0L).takeIf { it > 0 }
+            ?: System.currentTimeMillis().also { p.edit().putLong(KEY_BUNDLED_SEEN, it).apply() }
+        val latest = entries.map { it.source to it.tag }.distinctBy { it.first }
+        return Check(assets, latest, emptyList(), seen)
+    }
+
     /** Download an asset into the cache; the caller imports it and deletes the file. */
     fun download(context: Context, asset: Asset, progress: (Int) -> Unit): File {
         if (asset.sha256.isEmpty()) throw IOException("This driver list predates checksums - refresh it and try again")
         val target = File(context.cacheDir, asset.name)
+        // DroidDeck 中文版: the same file is in the APK - copy it out instead of downloading.
+        BundledComponents.find(context, asset.name, asset.sha256)?.let { bundled ->
+            if (BundledComponents.copy(context, bundled, target, progress)) return target
+        }
+        if (asset.url.startsWith(BundledComponents.URL_PREFIX)) throw IOException("The bundled driver could not be read - refresh to download it")
         val c = URL(asset.url).openConnection() as HttpURLConnection
         c.connectTimeout = 15_000
         c.readTimeout = 60_000

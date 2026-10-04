@@ -1,0 +1,148 @@
+{
+  "_comment": "DroidDeck 中文版: GPL components bundled into the APK. Pinned by tag and GitHub sha256; tools/zh/fetch_bundled.py downloads and checks them at build time.",
+  "items": [
+    {
+      "kind": "turnip",
+      "source": "Banners-Turnip",
+      "repo": "The412Banner/Banners-Turnip",
+      "tag": "v26.3.0-20261003-r4",
+      "name": "Turnip-v26.3.0-20261003-r4.zip",
+      "sha256": "355c2d7f9250ee90abb97ef4928c9b6cb3f80830cd26d4ad7c5ca63936a24238",
+      "size": 2638581,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "Banners-Turnip",
+      "repo": "The412Banner/Banners-Turnip",
+      "tag": "v26.3.0-20261003-r4",
+      "name": "Turnip-v26.3.0-20261003-r4-Linux.zip",
+      "sha256": "9d51b9956cd39f05b4e44fc7006a016bcc69c9dd8a1931662330cbbc27478202",
+      "size": 3216409,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "Banners-Turnip",
+      "repo": "The412Banner/Banners-Turnip",
+      "tag": "v26.3.0-20261003-r4",
+      "name": "Turnip-v26.3.0-20261003-r4-A8xx.zip",
+      "sha256": "cc04ef3ac538b04d307627e0b3ecbd3cb4a2c4ae0faae191e66b10da29c63bcb",
+      "size": 2674672,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "Banners-Turnip",
+      "repo": "The412Banner/Banners-Turnip",
+      "tag": "v26.3.0-20261003-r4",
+      "name": "Turnip-v26.3.0-20261003-r4-A8xx-Linux.zip",
+      "sha256": "f771e321575833f1c152c4fe547afb8915bd528d14f1f762d5c5df80968df39d",
+      "size": 3265913,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "Banners-Turnip",
+      "repo": "The412Banner/Banners-Turnip",
+      "tag": "v26.3.0-20261003-r4",
+      "name": "Turnip-v26.3.0-20261003-r4-8G2-OneUI.zip",
+      "sha256": "f9185207db331108545e78785c56874a2f3573e641c13fa69040af4b466afa77",
+      "size": 2637364,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "Banners-Turnip",
+      "repo": "The412Banner/Banners-Turnip",
+      "tag": "v26.3.0-20261003-r4",
+      "name": "Turnip-v26.3.0-20261003-r4-8G2-OneUI-Linux.zip",
+      "sha256": "ec801ae2920b799d140136bc8cf0fe2be71daa16b9e86528ae7e114159e9c82a",
+      "size": 3216533,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "Banners-Turnip",
+      "repo": "The412Banner/Banners-Turnip",
+      "tag": "v26.3.0-20261003-r4",
+      "name": "Turnip-v26.3.0-20261003-r4-710-720-Test.zip",
+      "sha256": "b4c2e1eca2d5532940330ce4675c1057eead70d208eb87160724e7cda50e3333",
+      "size": 2639378,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "Banners-Turnip",
+      "repo": "The412Banner/Banners-Turnip",
+      "tag": "v26.3.0-20261003-r4",
+      "name": "Turnip-v26.3.0-20261003-r4-710-720-Test-Linux.zip",
+      "sha256": "576776529a97ef0219937fb9a5c53a17428b21df9477e627fad3b0e3b24d23a8",
+      "size": 3215793,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "WinNative",
+      "repo": "WinNative-Emu/Drivers",
+      "tag": "v1.19",
+      "name": "WN-Turnip-1.19-b_Axxx.zip",
+      "sha256": "1a4fbae36c0062826b93179e99be00b3679b945dcd7fc7b062ba1db54e3cf55c",
+      "size": 2666244,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "WinNative",
+      "repo": "WinNative-Emu/Drivers",
+      "tag": "v1.19",
+      "name": "WN-Turnip-1.19-p_Axxx.zip",
+      "sha256": "661f66161fc8a029b2668e261c6fa9d5b86754e413cb314300afe8137908ea18",
+      "size": 2667492,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "WinNative",
+      "repo": "WinNative-Emu/Drivers",
+      "tag": "linux-v0.1.2",
+      "name": "WN-Linux-Turnip-0.1.2-b_Axxx.zip",
+      "sha256": "110e950bad364fdc96111dee51d2e39e96696231417dc8f53dfc45ee4a7e5516",
+      "size": 3370668,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "turnip",
+      "source": "WinNative",
+      "repo": "WinNative-Emu/Drivers",
+      "tag": "linux-v0.1.2",
+      "name": "WN-Linux-Turnip-0.1.2-p_Axxx.zip",
+      "sha256": "3dee70a834aa912e1db25ff2a4cf2bdf1648ef840d536342a81c5d75c862cb78",
+      "size": 3371152,
+      "prerelease": false,
+      "license": "GPL-3.0 (packaging); Mesa Turnip is MIT"
+    },
+    {
+      "kind": "decky",
+      "source": "Decky Loader",
+      "repo": "Droid-Deck/decky-loader",
+      "tag": "droiddeck-arm64-preview.2",
+      "name": "PluginLoader-arm64",
+      "sha256": "5de85f0018e72b671d71adadd0bf0ab854be42da68d55ae8ff54da83d432df88",
+      "size": 25219504,
+      "prerelease": true,
+      "license": "GPL-2.0"
+    }
+  ]
+}

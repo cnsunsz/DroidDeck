@@ -1,5 +1,6 @@
 package com.droiddeck.launcher.runtime
 
+import com.droiddeck.launcher.core.BundledComponents
 import com.droiddeck.launcher.core.Hashes
 import android.content.Context
 import android.util.Log
@@ -62,7 +63,7 @@ object DeckyManager {
     }
 
     fun releaseChannels(context: Context): ReleaseChannels {
-        val body = Downloader.downloadString(RELEASES) ?: return ReleaseChannels(emptyList(), emptyList())
+        val body = Downloader.downloadString(RELEASES) ?: return bundledChannels(context)
         return try {
             val array = JSONArray(body)
             val stable = mutableListOf<Release>()
@@ -90,8 +91,16 @@ object DeckyManager {
                 val row = Release(release.optString("tag_name", "unknown"), isPrerelease, name, url, digest, checksum, size, if (name == "PluginLoader-arm64") 183 else 62)
                 (if (isPrerelease) prerelease else stable).add(row)
             }
-            ReleaseChannels(stable, prerelease)
-        } catch (e: Exception) { Log.w(TAG, "release metadata", e); ReleaseChannels(emptyList(), emptyList()) }
+            if (stable.isEmpty() && prerelease.isEmpty()) bundledChannels(context) else ReleaseChannels(stable, prerelease)
+        } catch (e: Exception) { Log.w(TAG, "release metadata", e); bundledChannels(context) }
+    }
+
+    /** DroidDeck 中文版: the Decky Loader the APK carries (BundledComponents), offered when GitHub can't be read. */
+    private fun bundledChannels(context: Context): ReleaseChannels {
+        val rows = BundledComponents.ofKind(context, "decky").filter { it.name == "PluginLoader-arm64" }.map {
+            Release(it.tag, it.prerelease, it.name, it.url, "sha256:" + it.sha256, null, it.size, 183)
+        }
+        return ReleaseChannels(rows.filter { !it.prerelease }, rows.filter { it.prerelease })
     }
 
     /** Downloads to a sibling temp file and atomically renames only after size, digest and ELF checks. */
@@ -100,7 +109,15 @@ object DeckyManager {
         val target = loader(context)
         target.parentFile?.mkdirs()
         val temp = File(target.parentFile, "PluginLoader.download")
-        val ok = Downloader.downloadFile(release.url, temp, false) { f -> progress("Downloading ${release.tag}", if (f < 0) -1 else (f * 100).toInt().coerceIn(0, 100)) }
+        // DroidDeck 中文版: the APK may carry this exact build - copy it out instead of downloading.
+        val bundled = BundledComponents.byUrl(context, release.url)
+            ?: BundledComponents.find(context, release.asset, release.digest?.substringAfter(':'))
+        val ok = if (bundled != null) {
+            BundledComponents.copy(context, bundled, temp) { pct -> progress("Installing ${release.tag}", pct) }
+        } else {
+            !release.url.startsWith(BundledComponents.URL_PREFIX) &&
+                Downloader.downloadFile(release.url, temp, false) { f -> progress("Downloading ${release.tag}", if (f < 0) -1 else (f * 100).toInt().coerceIn(0, 100)) }
+        }
         if (!ok) { temp.delete(); return "Decky Loader download failed" }
         if (temp.length() != release.size) { temp.delete(); return "Decky Loader size did not match the release metadata" }
         val expected = release.digest?.substringAfter(':') ?: release.shaUrl?.let { checksumUrl ->
