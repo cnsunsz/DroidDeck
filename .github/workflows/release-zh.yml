@@ -22,8 +22,11 @@ concurrency:
 jobs:
   build:
     uses: ./.github/workflows/build.yml
+    # The most any job of build.yml asks for (its sign job wants actions: read), though on a tag
+    # only its build job runs.
     permissions:
       contents: read
+      actions: read
       pull-requests: write
     secrets: inherit
 
