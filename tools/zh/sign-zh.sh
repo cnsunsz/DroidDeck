@@ -27,7 +27,7 @@ work=$(mktemp -d); trap 'rm -rf "$work"' EXIT
   --out "$out" "$work/aligned.apk"
 rm -f "$out.idsig"
 
-"$BUILD_TOOLS/apksigner" verify --min-sdk-version 26 --verbose --print-certs "$out" | tee "$work/sig.txt"
+"$BUILD_TOOLS/apksigner" verify --min-sdk-version 21 --verbose --print-certs "$out" | tee "$work/sig.txt"
 for scheme in "v1 scheme (JAR signing): true" "v2 scheme (APK Signature Scheme v2): true" "v3 scheme (APK Signature Scheme v3): true"; do
   grep -qF "$scheme" "$work/sig.txt" || die "not signed with $scheme"
 done
