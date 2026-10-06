@@ -87,8 +87,12 @@ find "$XDG_RUNTIME_DIR" -mindepth 1 -maxdepth 1 ! -name 'wayland-0*' ! -name 'ke
 # fontconfig's rules (sans-serif -> DejaVu Sans and the rest) live as links in /etc/fonts/conf.d,
 # and the rootfs has none: applications then find fonts but no default font. Firefox logs
 # "no fonts" and draws pages without text.
-if [ -d /usr/share/fontconfig/conf.default ] && ! ls /etc/fonts/conf.d/*.conf >/dev/null 2>&1; then
-  for f in /usr/share/fontconfig/conf.default/*.conf; do ln -sf "$f" /etc/fonts/conf.d/; done
+# (Tested on 60-latin.conf, one of those defaults: the app puts its own Chinese fallback rules,
+# 64-droiddeck-zh-cjk.conf, in conf.d too, and that one must not stand in for the whole set.)
+if [ -d /usr/share/fontconfig/conf.default ] && [ ! -e /etc/fonts/conf.d/60-latin.conf ]; then
+  for f in /usr/share/fontconfig/conf.default/*.conf; do
+    [ -e "/etc/fonts/conf.d/${f##*/}" ] || ln -sf "$f" /etc/fonts/conf.d/
+  done
   echo "== fontconfig: linked $(ls /etc/fonts/conf.d/*.conf | wc -l) default rules"
 fi
 # Those rules map sans-serif and friends onto whatever a full distribution installs, and this

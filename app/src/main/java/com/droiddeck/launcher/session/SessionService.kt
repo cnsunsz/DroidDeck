@@ -585,6 +585,10 @@ class SessionService : Service() {
         if (SessionState.mode == MODE_STEAM) guest.add("BL_STEAMDECK=" + (if (SessionPrefs.steamDeckMode(this)) "1" else "0"))
         if (SessionState.mode == MODE_STEAM) guest.add("BL_MANGOAPP=" + (if (SessionPrefs.mangoapp(this)) "1" else "0"))
         if (steamHere) guest.add("BL_STEAM_CHANNEL=" + SessionPrefs.steamChannel(this))
+        // DroidDeck 中文版: on a Simplified Chinese phone a fresh Steam starts in Chinese. Only a
+        // default - bannerlator-session writes it only when Steam has no settings of its own yet,
+        // so a language chosen in Steam is never overridden.
+        if (steamHere && isSimplifiedChinese(Locale.getDefault())) guest.add("BL_DEFAULT_STEAM_LANGUAGE=schinese")
         if (SessionState.mode == MODE_STEAM) {
             guest.add("BL_GAMESCOPE_FORCE_FULLSCREEN=" + (if (SessionPrefs.forceFullscreen(this)) "1" else "0"))
             guest.add("BL_GAMESCOPE_STRETCH_16X9=" + (if (SessionPrefs.stretch16x9(this)) "1" else "0"))
@@ -1544,6 +1548,15 @@ class SessionService : Service() {
                     .setAction(ACTION_AUXILIARY_EXITED)
                     .putExtra(EXTRA_AUXILIARY_PID, pid),
             )
+        }
+    }
+
+    private fun isSimplifiedChinese(locale: Locale): Boolean {
+        if (locale.language != "zh") return false
+        return when {
+            locale.script == "Hans" -> true
+            locale.script == "Hant" -> false
+            else -> locale.country !in setOf("TW", "HK", "MO")
         }
     }
 }

@@ -169,6 +169,9 @@ object SessionFiles {
             Log.e(TAG, "could not write ld.so.preload")
         }
 
+        // DroidDeck 中文版: Noto Sans SC and its fontconfig rules, so Chinese is not drawn as boxes.
+        CjkFonts.install(context, root)
+
         val startupMovieDir = File(root, "root/.local/share/Steam/config/uioverrides/movies")
         // Steam looks up these conventional names in its user override directory. Keep both
         // variants populated because the startup movie name differs across Steam clients.

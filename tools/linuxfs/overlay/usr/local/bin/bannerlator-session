@@ -595,6 +595,36 @@ BUSCONF
       exit 69
     fi
 
+    # DroidDeck 中文版: the app copies Noto Sans SC to /usr/local/share/fonts/droiddeck-zh and its
+    # fallback rules to /etc/fonts/conf.d (CjkFonts.kt), so the client's Chromium UI has Han glyphs.
+    # libfontconfig caches a directory it finds uncached by itself; fc-cache, where the runtime has
+    # it, just does that before the client starts instead of in its first process. Re-run whenever
+    # the app has replaced the fonts (their stamp is newer than ours).
+    _bl_zh_fonts=/usr/local/share/fonts/droiddeck-zh
+    _bl_zh_cached=/var/cache/fontconfig/.droiddeck-zh-fonts
+    if [ -f "$_bl_zh_fonts/.droiddeck-fonts" ]; then
+      if command -v fc-cache >/dev/null 2>&1 && { [ ! -f "$_bl_zh_cached" ] || [ "$_bl_zh_fonts/.droiddeck-fonts" -nt "$_bl_zh_cached" ]; }; then
+        mkdir -p /var/cache/fontconfig
+        fc-cache /usr/local/share/fonts >/dev/null 2>&1 && : > "$_bl_zh_cached"
+      fi
+      command -v fc-match >/dev/null 2>&1 && echo "== fonts: Chinese text uses $(fc-match 'sans-serif:lang=zh-cn' 2>/dev/null)"
+    fi
+    # On a Simplified Chinese phone the app asks for Chinese as the client's starting language
+    # (BL_DEFAULT_STEAM_LANGUAGE). Only for a client that has written no settings yet: once
+    # registry.vdf exists the language in it is the user's (or Steam's own) and is left alone,
+    # and the stamp keeps this from ever running a second time.
+    _bl_lang_stamp=$HOME/.config/droiddeck/steam-language-default
+    case ${BL_DEFAULT_STEAM_LANGUAGE:-} in
+      schinese|tchinese|english)
+        if [ ! -e "$HOME/.steam/registry.vdf" ] && [ ! -e "$_bl_lang_stamp" ]; then
+          mkdir -p "$HOME/.steam" "${_bl_lang_stamp%/*}"
+          printf '"Registry"\n{\n\t"HKCU"\n\t{\n\t\t"Software"\n\t\t{\n\t\t\t"Valve"\n\t\t\t{\n\t\t\t\t"Steam"\n\t\t\t\t{\n\t\t\t\t\t"language"\t\t"%s"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n' \
+            "$BL_DEFAULT_STEAM_LANGUAGE" > "$HOME/.steam/registry.vdf" \
+            && echo "== steam: starting language $BL_DEFAULT_STEAM_LANGUAGE (fresh client, phone language)"
+        fi
+        : > "$_bl_lang_stamp" 2>/dev/null
+        ;;
+    esac
     export STEAM_RUNTIME=1
     export LD_LIBRARY_PATH=$steam_root/steamrtarm64:$steam_root/steamrtarm64/panorama${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
     export SDL_VIDEO_X11_DGAMOUSE=0

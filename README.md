@@ -20,6 +20,7 @@ DroidDeck brings the SteamOS experience to Android: Valve's Steam client in Big 
 - **完整简体中文界面**：`app/src/main/res/values-zh-rCN/strings.xml`，系统语言为简体中文时自动启用。
 - **包名 `com.droiddeck.launcher.zh`**，应用名“DroidDeck 中文版”，可与原版**同时安装**。原版由上游私有密钥签名，第三方构建无法覆盖安装原版。
 - **预装 GPU 驱动（Banners-Turnip、WinNative Turnip）和 Decky Loader**，首次运行无需下载，安装前会校验 SHA-256。许可证与源代码链接见 [NOTICE-zh.md](NOTICE-zh.md)。
+- **内置中文字体 Noto Sans SC**（SIL OFL 1.1），启动时自动装进 Linux 运行时并配置 fontconfig 回退，Steam 大屏幕模式切换到中文后不会再显示方块。手机语言为简体中文时，全新的 Steam 默认使用简体中文（不会覆盖已有的语言设置）。
 - Linux 运行时、Nightlies 组件、Steam 和 Proton 仍按原方式在线下载。
 - 发布流程：推送 `v*-zh*` 标签（发布说明写在 `docs/releases/<标签>.md`），由 `.github/workflows/release-zh.yml` 构建，并用本分支的发布密钥签名、发布。
 
