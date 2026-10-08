@@ -17,6 +17,7 @@ DroidDeck brings the SteamOS experience to Android: Valve's Steam client in Big 
 
 这是 [Droid-Deck/DroidDeck](https://github.com/Droid-Deck/DroidDeck) 的简体中文分支，下载地址见本仓库的 [Releases](https://github.com/cnsunsz/DroidDeck/releases)。
 
+- **当前基于上游 0.3.1**（中文版 v0.3.1-zh.1），通过合并（merge）跟进上游版本。
 - **完整简体中文界面**：`app/src/main/res/values-zh-rCN/strings.xml`，系统语言为简体中文时自动启用。
 - **包名 `com.droiddeck.launcher.zh`**，应用名“DroidDeck 中文版”，可与原版**同时安装**。原版由上游私有密钥签名，第三方构建无法覆盖安装原版。
 - **预装 GPU 驱动（Banners-Turnip、WinNative Turnip）和 Decky Loader**，首次运行无需下载，安装前会校验 SHA-256。许可证与源代码链接见 [NOTICE-zh.md](NOTICE-zh.md)。
@@ -44,4 +45,4 @@ Compatibility and performance vary by device; hardware validation is limited. De
 
 ## Credits and licence
 
-GPL-3.0. Runtime, shim, input, and controller work build on WinNative and Bannerlator (maxjivi05). LSFG frame generation is from the work of Camille LaVey and the [Eden](https://eden-emu.dev) emulator project, following [lsfg-vk](https://github.com/PancakeTAS/lsfg-vk), ported to WinNative and DroidDeck by [@maxjivi05](https://github.com/maxjivi05); it needs your own copy of [Lossless Scaling](https://store.steampowered.com/app/993090/) and ships none of its shaders. See [LICENSE](LICENSE). Steam and Proton belong to Valve Corporation; this project is not affiliated with Valve.
+GPL-3.0. Runtime, shim, input, and controller work build on WinNative and Bannerlator (maxjivi05). LSFG frame generation is from the work of Camille LaVey and the [Eden](https://eden-emu.dev) emulator project, following [lsfg-vk](https://github.com/PancakeTAS/lsfg-vk), ported to WinNative and DroidDeck by [@maxjivi05](https://github.com/maxjivi05); it needs your own copy of [Lossless Scaling](https://store.steampowered.com/app/993090/) and ships none of its shaders. x86 AppImages, and any whose own runtime cannot unpack them, are unpacked with [uruntime](https://github.com/VHSgunzo/uruntime) by VHSgunzo (MIT), shipped unmodified with its licence. See [LICENSE](LICENSE). Steam and Proton belong to Valve Corporation; this project is not affiliated with Valve.

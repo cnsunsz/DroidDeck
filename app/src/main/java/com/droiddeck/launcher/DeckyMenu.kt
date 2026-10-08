@@ -1,5 +1,6 @@
 package com.droiddeck.launcher
 
+import com.droiddeck.launcher.R
 import android.os.Handler
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -7,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.droiddeck.launcher.runtime.DeckyManager
 import com.droiddeck.launcher.session.SessionState
+import java.io.File
 
 /**
  * Decky Loader's state in the launcher: what is installed, the releases on offer and an install
@@ -50,5 +52,22 @@ internal class DeckyMenu(private val activity: android.app.Activity, private val
                 if (problem != null) android.widget.Toast.makeText(activity, problem, android.widget.Toast.LENGTH_LONG).show()
             }
         }, "install-decky").start()
+    }
+
+    fun importPluginZip(archive: File) {
+        if (deckyStage != null || SessionState.running || deckyInstalled == null) return
+        deckyStage = activity.getString(R.string.hc_decky_import_starting); deckyPercent = -1
+        Thread({
+            val problem = runCatching {
+                DeckyManager.installPluginZip(activity, archive) { label, value ->
+                    ui.post { deckyStage = label; deckyPercent = value }
+                }
+            }.getOrElse { error -> activity.getString(R.string.hc_decky_import_failed, error.message ?: error.javaClass.simpleName) }
+            ui.post {
+                deckyStage = null; deckyPercent = -1
+                val message = problem ?: activity.getString(R.string.hc_decky_import_done)
+                android.widget.Toast.makeText(activity, message, android.widget.Toast.LENGTH_LONG).show()
+            }
+        }, "import-decky-plugin").start()
     }
 }
