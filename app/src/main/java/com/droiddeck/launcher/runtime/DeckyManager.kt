@@ -5,7 +5,6 @@ import com.droiddeck.launcher.core.BundledComponents
 import com.droiddeck.launcher.core.Hashes
 import android.content.Context
 import android.util.Log
-import com.droiddeck.launcher.R
 import com.droiddeck.launcher.core.Downloader
 import com.droiddeck.launcher.session.SessionState
 import com.droiddeck.launcher.core.ArchivePaths
