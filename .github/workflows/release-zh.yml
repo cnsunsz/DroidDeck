@@ -107,3 +107,38 @@ jobs:
               --target "$GITHUB_SHA" --title "$title" --notes-file "$RUNNER_TEMP/body.md" --latest
           fi
           echo "Published $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$TAG" >> "$GITHUB_STEP_SUMMARY"
+
+
+      - name: Publish update catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # DroidDeck 中文版: static catalog AppUpdates fetches (same shape as upstream's
+          # DroidDeck-CI catalog.json), kept on the catalog branch so a push does not rebuild main.
+          BUILD_TOOLS=${BUILD_TOOLS:-$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -n1)}
+          apk=$(ls out/DroidDeck-ZH-*.apk)
+          name=${apk##*/}
+          badging=$("$BUILD_TOOLS/aapt" dump badging "$apk")
+          versionCode=$(sed -n "s/.*versionCode='\([0-9]*\)'.*/\1/p" <<<"$badging" | head -1)
+          versionName=$(sed -n "s/.*versionName='\([^']*\)'.*/\1/p" <<<"$badging" | head -1)
+          package=$(sed -n "s/.*name='\([^']*\)'.*/\1/p" <<<"$badging" | head -1)
+          [ "$package" = com.droiddeck.launcher.zh ] || { echo "::error::unexpected package $package"; exit 1; }
+          [ -n "$versionCode" ] && [ -n "$versionName" ] || { echo "::error::could not read version from apk"; exit 1; }
+          sha=$(awk '{print $1}' out/SHA256SUMS.txt | head -1)
+          signer=$(tr -d ' \n' < keystore/release-signer.sha256)
+          size=$(stat -c%s "$apk")
+          summary=$(awk 'NF && !/^#/ {print; exit}' "docs/releases/$TAG.md" | head -c 280)
+          publishedAt=$(date +%s000)
+          python3 tools/zh/write_update_catalog.py             "$TAG" "$GITHUB_SHA" "$versionName" "$versionCode" "$name"             "$sha" "$signer" "$size" "$summary" "$publishedAt" out/catalog.json
+          work=$RUNNER_TEMP/catalog-branch
+          rm -rf "$work" && mkdir -p "$work" && cd "$work"
+          git init -q
+          git checkout -q -b catalog
+          cp "$GITHUB_WORKSPACE/out/catalog.json" catalog.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add catalog.json
+          git commit -q -m "catalog $TAG"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" catalog:catalog
+          echo "Update catalog: https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/catalog/catalog.json" >> "$GITHUB_STEP_SUMMARY"

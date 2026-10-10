@@ -17,17 +17,18 @@ DroidDeck brings the SteamOS experience to Android: Valve's Steam client in Big 
 
 这是 [Droid-Deck/DroidDeck](https://github.com/Droid-Deck/DroidDeck) 的简体中文分支，下载地址见本仓库的 [Releases](https://github.com/cnsunsz/DroidDeck/releases)。
 
-- **当前基于上游 0.3.1**（中文版 v0.3.1-zh.1），通过合并（merge）跟进上游版本。
+- **当前基于上游 0.3.2**（中文版 v0.3.2-zh.1），通过合并（merge）跟进上游版本。
 - **完整简体中文界面**：`app/src/main/res/values-zh-rCN/strings.xml`，系统语言为简体中文时自动启用。
 - **包名 `com.droiddeck.launcher.zh`**，应用名“DroidDeck 中文版”，可与原版**同时安装**。原版由上游私有密钥签名，第三方构建无法覆盖安装原版。
 - **预装 GPU 驱动（Banners-Turnip、WinNative Turnip）和 Decky Loader**，首次运行无需下载，安装前会校验 SHA-256。许可证与源代码链接见 [NOTICE-zh.md](NOTICE-zh.md)。
+- **应用内更新**指向本仓库 Releases（`catalog` 分支上的目录），签名为本分支密钥。
 - **内置中文字体 Noto Sans SC**（SIL OFL 1.1），启动时自动装进 Linux 运行时并配置 fontconfig 回退，Steam 大屏幕模式切换到中文后不会再显示方块。手机语言为简体中文时，全新的 Steam 默认使用简体中文（不会覆盖已有的语言设置）。
 - Linux 运行时、Nightlies 组件、Steam 和 Proton 仍按原方式在线下载。
 - 发布流程：推送 `v*-zh*` 标签（发布说明写在 `docs/releases/<标签>.md`），由 `.github/workflows/release-zh.yml` 构建，并用本分支的发布密钥签名、发布。
 
 ## Requirements and install
 
-Use Android 9 or newer on a supported Adreno device (730 or newer, or 8xx). Mali, Xclipse, PowerVR, and Adreno 710 are unsupported. No root is required. Allow about 3 GB for the runtime and 1.1 GB more for the desktop and emulators. Install the APK from [Releases](https://github.com/Droid-Deck/DroidDeck/releases), install the Linux runtime, then press **Play** and sign in. Steam downloads on first launch. Install **Desktop & apps** to use the desktop and emulators. The **Store** installs Linux apps and games from Flathub (ARM64 builds) with Flatpak; with additional options to install Appimages and set up scripts.
+Use Android 9 or newer on a supported Adreno device (730 or newer, or 8xx). Adreno 6xx is experimental: DirectX 11 uses DXVK 2 and may run, and DirectX 12 games can still crash. Mali, Xclipse, PowerVR, and Adreno 710 are unsupported. No root is required. Allow about 3 GB for the runtime and 1.1 GB more for the desktop and emulators. Install the APK from [Releases](https://github.com/Droid-Deck/DroidDeck/releases), install the Linux runtime, then press **Play** and sign in. Steam downloads on first launch. Install **Desktop & apps** to use the desktop and emulators. The **Store** installs Linux apps and games from Flathub (ARM64 builds) with Flatpak; with additional options to install Appimages and set up scripts.
 
 Before Steam launches, you must turn off **Restrict child processes** in Developer options. If this option is not available in developer settings (Android 12 and 13 devices), first launch of Steam will present a "Fix it for me" button, which will help automate the setup process.
 

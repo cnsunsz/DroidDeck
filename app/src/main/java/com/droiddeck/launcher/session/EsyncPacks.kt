@@ -618,14 +618,15 @@ object EsyncPacks {
             return false
         }
         try {
-            onProgress?.invoke(context.getString(R.string.hc_esync_fetching), -1)
+            val label = context.getString(com.droiddeck.launcher.R.string.esync_fetching)
+            onProgress?.invoke(label, -1)
             var reported = -1
             val fetched = FileOutputStream(part).use { output ->
                 fetch(entry.asset.url, entry.asset.size, output) { done ->
                     val percent = (done * 100 / entry.asset.size).toInt().coerceIn(0, 100)
                     if (percent != reported) {
                         reported = percent
-                        onProgress?.invoke(context.getString(R.string.hc_esync_fetching), percent)
+                        onProgress?.invoke(label, percent)
                     }
                 }
             }
