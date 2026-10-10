@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "sourceRepo": "cnsunsz/DroidDeck",
+  "ciRepo": "cnsunsz/DroidDeck",
+  "generatedAt": 1791623494000,
+  "stable": {
+    "tag": "v0.3.2-zh.1",
+    "title": "DroidDeck 中文版 v0.3.2-zh.1",
+    "summary": "基于上游 DroidDeck 0.3.2，保留中文版既有改动，并打通应用内更新。",
+    "commit": "2737c6abf878411a340dedc7460fa551053fdf14",
+    "pr": 0,
+    "version": "0.3.2-zh.1",
+    "versionCode": 13,
+    "publishedAt": 1791623494000,
+    "url": "https://github.com/cnsunsz/DroidDeck/releases/tag/v0.3.2-zh.1",
+    "apks": {
+      "com.droiddeck.launcher.zh": {
+        "name": "DroidDeck-ZH-0.3.2-zh.1.apk",
+        "url": "https://github.com/cnsunsz/DroidDeck/releases/download/v0.3.2-zh.1/DroidDeck-ZH-0.3.2-zh.1.apk",
+        "size": 112495429,
+        "sha256": "1e878603dab38623c02fe952460d7f09797a3b01e929729756ff8ec92d10b681",
+        "packageName": "com.droiddeck.launcher.zh",
+        "versionCode": 13,
+        "signerSha256": "cc15df97830fd4cedd16ddd3aadfcfeb2d3ae9a635976810986765c1561cc2e7"
+      }
+    }
+  },
+  "preview": null,
+  "tests": [],
+  "recentPreviews": []
+}
