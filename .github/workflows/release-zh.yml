@@ -120,9 +120,9 @@ jobs:
           apk=$(ls out/DroidDeck-ZH-*.apk)
           name=${apk##*/}
           badging=$("$BUILD_TOOLS/aapt" dump badging "$apk")
-          versionCode=$(sed -n "s/.*versionCode='\([0-9]*\)'.*/\1/p" <<<"$badging" | head -1)
-          versionName=$(sed -n "s/.*versionName='\([^']*\)'.*/\1/p" <<<"$badging" | head -1)
-          package=$(sed -n "s/.*name='\([^']*\)'.*/\1/p" <<<"$badging" | head -1)
+          package=$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" <<<"$badging" | head -1)
+          versionCode=$(sed -n "s/^package:.*versionCode='\([0-9]*\)'.*/\1/p" <<<"$badging" | head -1)
+          versionName=$(sed -n "s/^package:.*versionName='\([^']*\)'.*/\1/p" <<<"$badging" | head -1)
           [ "$package" = com.droiddeck.launcher.zh ] || { echo "::error::unexpected package $package"; exit 1; }
           [ -n "$versionCode" ] && [ -n "$versionName" ] || { echo "::error::could not read version from apk"; exit 1; }
           sha=$(awk '{print $1}' out/SHA256SUMS.txt | head -1)
