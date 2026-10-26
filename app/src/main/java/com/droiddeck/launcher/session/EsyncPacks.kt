@@ -1,6 +1,5 @@
 package com.droiddeck.launcher.session
 
-import com.droiddeck.launcher.R
 import android.content.Context
 import android.util.Log
 import com.droiddeck.launcher.core.DownloadSource
