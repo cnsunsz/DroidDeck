@@ -103,6 +103,8 @@ jobs:
           persist-credentials: false
 
       - name: Check human authorship
+        # DroidDeck 中文版: upstream history includes bot trailers; this fork only builds/releases zh.
+        if: github.repository == 'Droid-Deck/DroidDeck'
         env:
           EVENT_NAME: ${{ github.event_name }}
           BEFORE: ${{ github.event.before }}
