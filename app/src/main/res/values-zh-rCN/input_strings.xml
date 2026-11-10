@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="input_settings">输入配置</string>
+    <string name="input_profiles">配置方案</string>
+    <string name="input_physical">实体手柄</string>
+    <string name="input_primary">主屏</string>
+    <string name="input_secondary">副屏</string>
+    <string name="input_native">系统原生 / Steam Input</string>
+    <string name="input_native_target">系统原生：%1$s</string>
+    <string name="input_remap_native">发送另一手柄控件</string>
+    <string name="input_disabled">已关闭</string>
+    <string name="input_keys">按键或组合键</string>
+    <string name="input_direction_keys">方向键</string>
+    <string name="input_pointer">移动指针</string>
+    <string name="input_pointer_speed">指针速度：%1$d</string>
+    <string name="input_scroll">滚动</string>
+    <string name="input_scroll_vertical">垂直滚动</string>
+    <string name="input_mouse_left">鼠标左键</string>
+    <string name="input_mouse_right">鼠标右键</string>
+    <string name="input_mouse_middle">鼠标中键</string>
+    <string name="input_command_menu">打开 DroidDeck 菜单</string>
+    <string name="input_command_keyboard">显示键盘</string>
+    <string name="input_command_steam">打开 Steam 菜单</string>
+    <string name="input_command_qam">打开 Steam 快捷菜单</string>
+    <string name="input_remove_element">移除控件</string>
+    <string name="input_add_element">添加控件</string>
+    <string name="input_extra_keys">设备专用按钮</string>
+    <string name="input_capture">分配实体按钮</string>
+    <string name="input_capture_confirm">松开按钮后，选择编辑、重试或取消。松开后按 B 或返回即可取消。</string>
+    <string name="input_capture_retry">重试</string>
+    <string name="input_capture_hint">按下要绑定的按钮，包括被识别为键盘键的返回键。音量和 Android 系统键已保留。此分配仅适用于本设备。</string>
+    <string name="input_remove_binding">移除分配</string>
+    <string name="input_latency">输入诊断</string>
+    <string name="input_measure">记录输入调度时间</string>
+    <string name="input_read_timing">查看测量结果</string>
+    <string name="input_latency_hint">测量从 Android 调度到现有输入通道发布的时间。不包括蓝牙到达、客户机轮询、渲染和显示延迟。默认不开启记录。</string>
+    <string name="input_normal_binding">使用普通输入绑定</string>
+</resources>

@@ -1,5 +1,6 @@
 package com.droiddeck.launcher.files
 
+import com.droiddeck.launcher.assumeFilePermissionsEnforced
 import java.io.File
 import java.util.concurrent.CancellationException
 import java.nio.file.Files
@@ -53,27 +54,25 @@ class FileOpsCopyTest {
         assertEquals("replacement", src.readText())
     }
 
-    @Test fun cancellingStopsATreeOfEmptyFiles() {
+    @Test fun cancellingRemovesANewTreeOfEmptyFiles() {
         val src = tmp.newFolder("source")
         for (name in listOf("a", "b", "c")) File(src, name).createNewFile()
         val dst = File(tmp.root, "dest")
-        var checks = 0
         assertThrows(CancellationException::class.java) {
-            FileOps.copyWithProgress(src, dst, null) { checks++ > 1 }
+            FileOps.copyWithProgress(src, dst, null) { dst.list()?.isNotEmpty() == true }
         }
-        assertEquals(1, dst.list()!!.size)
+        assertFalse(dst.exists())
         assertEquals(3, src.list()!!.size)
     }
 
-    @Test fun cancellingStopsATreeOfEmptyFolders() {
+    @Test fun cancellingRemovesANewTreeOfEmptyFolders() {
         val src = tmp.newFolder("source")
         for (name in listOf("a", "b", "c")) File(src, name).mkdir()
         val dst = File(tmp.root, "dest")
-        var checks = 0
         assertThrows(CancellationException::class.java) {
-            FileOps.copyWithProgress(src, dst, null) { checks++ > 1 }
+            FileOps.copyWithProgress(src, dst, null) { dst.list()?.isNotEmpty() == true }
         }
-        assertEquals(1, dst.list()!!.size)
+        assertFalse(dst.exists())
     }
 
     @Test fun aCompletedCopyReplacesTheDestination() {
@@ -116,6 +115,7 @@ class FileOpsCopyTest {
     }
 
     @Test fun anOverwriteStillRefusesAReadOnlyDestination() {
+        assumeFilePermissionsEnforced()
         assumeTrue(Files.getFileStore(tmp.root.toPath()).supportsFileAttributeView("posix"))
         val src = tmp.newFile("source").apply { writeText("replacement") }
         val dst = tmp.newFile("dest").apply { writeText("original") }
