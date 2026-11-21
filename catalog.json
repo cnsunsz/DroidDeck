@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "sourceRepo": "cnsunsz/DroidDeck",
+  "ciRepo": "cnsunsz/DroidDeck",
+  "generatedAt": 1795280904000,
+  "stable": {
+    "tag": "v0.7.1-zh.1",
+    "title": "DroidDeck 中文版 v0.7.1-zh.1",
+    "summary": "基于上游 [DroidDeck 0.7.1](https://github.com/Droid-Deck/DroidDeck/releases/tag/0.7.1)。包名 `com.droiddeck.launcher.zh`，可与原版共存；versionCode 19。",
+    "commit": "5c5469fbf532ad2552ebd862f3104a209ef048ed",
+    "pr": 0,
+    "version": "0.7.1-zh.1",
+    "versionCode": 19,
+    "publishedAt": 1795280904000,
+    "url": "https://github.com/cnsunsz/DroidDeck/releases/tag/v0.7.1-zh.1",
+    "apks": {
+      "com.droiddeck.launcher.zh": {
+        "name": "DroidDeck-ZH-0.7.1-zh.1.apk",
+        "url": "https://github.com/cnsunsz/DroidDeck/releases/download/v0.7.1-zh.1/DroidDeck-ZH-0.7.1-zh.1.apk",
+        "size": 170715646,
+        "sha256": "36ff82dbc79b2fab9375bac45cc6cc48720d9ebb8761018f0407a540335468e0",
+        "packageName": "com.droiddeck.launcher.zh",
+        "versionCode": 19,
+        "signerSha256": "cc15df97830fd4cedd16ddd3aadfcfeb2d3ae9a635976810986765c1561cc2e7"
+      }
+    }
+  },
+  "preview": null,
+  "tests": [],
+  "recentPreviews": []
+}
